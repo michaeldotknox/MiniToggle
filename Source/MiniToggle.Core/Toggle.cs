@@ -11,6 +11,11 @@ namespace MiniToggle.Core
         {
             return new ToggleConfiguration {Toggle = typeof (TToggle)};
         }
+
+        public static bool IsEnabled()
+        {
+            return Toggle.Toggles[typeof(TToggle)].Invoke();
+        }
     }
 
     public static class Toggle
@@ -24,11 +29,6 @@ namespace MiniToggle.Core
                     .SelectMany(
                         assembly => assembly.GetTypes().Where(type => type.GetInterfaces().Contains(typeof (IToggle))))
                     .ToDictionary(x => x, y => null as Func<bool>);
-        }
-
-        public static bool IsEnabled<TToggle>() where TToggle : IToggle
-        {
-            return Toggles[typeof (TToggle)].Invoke();
         }
 
         public static void AlwaysTrue(this ToggleConfiguration toggleConfiguration)
