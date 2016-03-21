@@ -53,7 +53,16 @@ namespace MiniToggle.Core
 
         public static void Named(this ApiConfiguration apiConfiguration, string settingName)
         {
-            Toggles[apiConfiguration.Toggle] = () => ConfigurationManager.AppSettings[settingName] == "true";
+            Toggles[apiConfiguration.Toggle] = () =>
+            {
+                var setting = ConfigurationManager.AppSettings[settingName];
+                if (setting == null)
+                {
+                    return true;
+                }
+
+                return ConfigurationManager.AppSettings[settingName] == "true";
+            };
         }
     }
 }
