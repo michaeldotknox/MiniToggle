@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Reflection;
 
 namespace MiniToggle.Core
 {
@@ -20,9 +19,11 @@ namespace MiniToggle.Core
 
         static Toggle()
         {
-            Toggles = Assembly.GetEntryAssembly()
-                .GetTypes()
-                .Where(x => x.GetInterfaces().Contains(typeof(IToggle))).ToDictionary(x => x, y => null as Func<bool>);
+            Toggles =
+                AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(
+                        assembly => assembly.GetTypes().Where(type => type.GetInterfaces().Contains(typeof (IToggle))))
+                    .ToDictionary(x => x, y => null as Func<bool>);
         }
 
         public static bool IsEnabled<TToggle>() where TToggle : IToggle
