@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniToggle.Core", "Source\MiniToggle.Core\MiniToggle.Core.csproj", "{41B76810-40C5-41AF-AC56-FAC693BD8A0B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B75DDD20-3C63-47E7-A678-61D85828544B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "Source\TestProject\TestProject.csproj", "{DCB5AE80-B23F-452F-924D-E85F6C17D50E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{41B76810-40C5-41AF-AC56-FAC693BD8A0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41B76810-40C5-41AF-AC56-FAC693BD8A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41B76810-40C5-41AF-AC56-FAC693BD8A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41B76810-40C5-41AF-AC56-FAC693BD8A0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCB5AE80-B23F-452F-924D-E85F6C17D50E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCB5AE80-B23F-452F-924D-E85F6C17D50E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCB5AE80-B23F-452F-924D-E85F6C17D50E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCB5AE80-B23F-452F-924D-E85F6C17D50E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DCB5AE80-B23F-452F-924D-E85F6C17D50E} = {B75DDD20-3C63-47E7-A678-61D85828544B}
+	EndGlobalSection
+EndGlobal

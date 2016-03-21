@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>MiniToggle.Core</id>
+    <version>$version$</version>
+    <title>MiniToggle</title>
+    <authors>Michael Knox</authors>
+    <owners>Michael Knox</owners>
+    <projectUrl>https://github.com/michaeldotknox/minitoggle</projectUrl>
+    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>MiniToggle is a minimal feature toggle library designed to be simple and quick.</description>
+    <releaseNotes>This is the first beta release.</releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>c# .Net Feature Toggle</tags>
+  </metadata>
+</package>
