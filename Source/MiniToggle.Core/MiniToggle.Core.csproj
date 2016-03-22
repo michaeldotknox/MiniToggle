@@ -35,7 +35,7 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiConfiguration.cs" />
+    <Compile Include="SettingFileConfiguration.cs" />
     <Compile Include="ConfigurableToggle.cs" />
     <Compile Include="IToggle.cs" />
     <Compile Include="Toggle.cs" />
