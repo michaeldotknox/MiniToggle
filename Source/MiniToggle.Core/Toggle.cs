@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using MiniToggle.Core.Exceptions;
 
 namespace MiniToggle.Core
 {
@@ -26,7 +27,13 @@ namespace MiniToggle.Core
         /// <returns>A boolean indicating if the toggle is enabled</returns>
         public static bool IsEnabled()
         {
-            return Toggle.Toggles[typeof(TToggle)].Invoke();
+            var enabled = Toggle.Toggles[typeof (TToggle)];
+            if (enabled == null)
+            {
+                throw new ToggleNotConfiguredException(typeof(TToggle).Name);
+            }
+
+            return enabled.Invoke();
         }
     }
 

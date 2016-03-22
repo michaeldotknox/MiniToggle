@@ -35,6 +35,7 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\ToggleNotConfiguredException.cs" />
     <Compile Include="SettingFileConfiguration.cs" />
     <Compile Include="ConfigurableToggle.cs" />
     <Compile Include="IToggle.cs" />
