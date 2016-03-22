@@ -2,7 +2,7 @@
 
 namespace TestProject.Toggles
 {
-    public class AppConfigToggle : IToggle
+    public class AppConfig : IToggle
     {
     }
 }

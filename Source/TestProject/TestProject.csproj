@@ -41,7 +41,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Toggles\AlwaysFalse.cs" />
     <Compile Include="Toggles\AlwaysTrue.cs" />
-    <Compile Include="Toggles\AppConfigToggle.cs" />
+    <Compile Include="Toggles\AppConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
