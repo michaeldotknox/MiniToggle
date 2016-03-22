@@ -13,7 +13,7 @@ namespace TestProject
             Toggle<AlwaysFalse>.Is().AlwaysFalse();
             Toggle<AppConfigToggle>.Is().Configured().WithSetting().Named("testToggle");
 
-            if (Toggle.IsEnabled<AlwaysTrue>())
+            if (Toggle<AlwaysTrue>.IsEnabled())
             {
                 Console.WriteLine("Always true toggle is true.  This should be called.");
             }
@@ -22,7 +22,7 @@ namespace TestProject
                 Console.WriteLine("Always true toggle is false.  This should not be called.");
             }
 
-            if (Toggle.IsEnabled<AlwaysFalse>())
+            if (Toggle<AlwaysFalse>.IsEnabled())
             {
                 Console.WriteLine("Always false toggle is false.  This should not be called.");
             }
@@ -30,7 +30,7 @@ namespace TestProject
             {
                 Console.WriteLine("Always false toggle is false.  This should be called.");
             }
-            if (Toggle.IsEnabled<AppConfigToggle>())
+            if (Toggle<AppConfigToggle>.IsEnabled())
             {
                 Console.WriteLine("Configuration toggle is true.  This should be called.");
             }
