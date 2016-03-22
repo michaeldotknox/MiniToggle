@@ -35,6 +35,9 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\AlwaysFalseAttribute.cs" />
+    <Compile Include="Attributes\AlwaysTrueAttribute.cs" />
+    <Compile Include="Attributes\SettingConfigurationAttribute.cs" />
     <Compile Include="Exceptions\ToggleNotConfiguredException.cs" />
     <Compile Include="SettingFileConfiguration.cs" />
     <Compile Include="ConfigurableToggle.cs" />
@@ -42,10 +45,9 @@
     <Compile Include="Toggle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ToggleConfiguration.cs" />
+    <Compile Include="ToggleDefinition.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Attributes\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="MiniToggle.Core.nuspec" />
   </ItemGroup>

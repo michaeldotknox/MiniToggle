@@ -40,8 +40,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Toggles\AlwaysFalse.cs" />
+    <Compile Include="Toggles\AlwaysFalseWithAttribute.cs" />
     <Compile Include="Toggles\AlwaysTrue.cs" />
+    <Compile Include="Toggles\AlwaysTrueWithAttribute.cs" />
     <Compile Include="Toggles\AppConfig.cs" />
+    <Compile Include="Toggles\AppConfigWithAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Reflection;
+using MiniToggle.Core.Attributes;
 using MiniToggle.Core.Exceptions;
 
 namespace MiniToggle.Core
@@ -46,11 +48,24 @@ namespace MiniToggle.Core
 
         static Toggle()
         {
-            Toggles =
+            var toggles =
                 AppDomain.CurrentDomain.GetAssemblies()
                     .SelectMany(
-                        assembly => assembly.GetTypes().Where(type => type.GetInterfaces().Contains(typeof (IToggle))))
-                    .ToDictionary(x => x, y => null as Func<bool>);
+                        assembly => assembly.GetTypes().Where(type => type.GetInterfaces().Contains(typeof (IToggle)))).ToList();
+
+            Toggles =
+                toggles.Where(toggle => toggle.GetCustomAttribute<AlwaysTrueAttribute>() != null)
+                    .Select(type => new ToggleDefinition {Type = type, Evaluation = SetTrue()}).AsQueryable()
+                    .Union(
+                        (toggles.Where(toggle => toggle.GetCustomAttribute<AlwaysFalseAttribute>() != null)).Select(
+                            type => new ToggleDefinition {Type = type, Evaluation = SetFalse()})).AsQueryable()
+                    .Union(
+                        (toggles.Where(toggle => toggle.GetCustomAttribute<SettingConfigurationAttribute>() != null)).Select(
+                            type => new ToggleDefinition {Type = type, Evaluation = SetSettingFile(type)}))
+                    .ToDictionary(x => x.Type, y => y.Evaluation);
+
+
+            //.ToDictionary(x => x, y => SetTrue());
         }
 
         /// <summary>
@@ -109,5 +124,31 @@ namespace MiniToggle.Core
                 return ConfigurationManager.AppSettings[settingName] == "true";
             };
         }
+
+        private static Func<bool> SetTrue()
+        {
+            return () => true;
+        }
+
+        private static Func<bool> SetFalse()
+        {
+            return () => false;
+        }
+
+        private static Func<bool> SetSettingFile(Type type)
+        {
+            var attribute = type.GetCustomAttribute<SettingConfigurationAttribute>();
+
+            return () =>
+            {
+                var setting = ConfigurationManager.AppSettings[attribute.SettingName];
+                if (setting == null)
+                {
+                    return true;
+                }
+
+                return ConfigurationManager.AppSettings[attribute.SettingName] == "true";
+            };
+        } 
     }
 }
