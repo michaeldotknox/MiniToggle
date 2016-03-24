@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace UnitTests
+namespace MiniToggle.UnitTests
 {
     [TestFixture]
     public class Class1

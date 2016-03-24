@@ -2,7 +2,7 @@
 using MiniToggle.Core;
 using TestProject.Toggles;
 
-namespace TestProject
+namespace MiniToggle.TestProject
 {
     class Program
     {
