@@ -1,0 +1,11 @@
+version: 0.2.{build}
+branches:
+  only:
+  - master
+skip_non_tags: true
+before_build:
+- cmd: nuget restore
+build:
+  publish_nuget: true
+  include_nuget_references: true
+  verbosity: minimal
