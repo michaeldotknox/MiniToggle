@@ -63,9 +63,6 @@ namespace MiniToggle.Core
                         (toggles.Where(toggle => toggle.GetCustomAttribute<SettingConfigurationAttribute>() != null)).Select(
                             type => new ToggleDefinition {Type = type, Evaluation = SetSettingFile(type)}))
                     .ToDictionary(x => x.Type, y => y.Evaluation);
-
-
-            //.ToDictionary(x => x, y => SetTrue());
         }
 
         /// <summary>
