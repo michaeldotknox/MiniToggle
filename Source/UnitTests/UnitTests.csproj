@@ -52,11 +52,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="InitializationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetupFixture.cs" />
+    <Compile Include="Toggles\AlwaysFalseToggle.cs" />
+    <Compile Include="Toggles\AlwaysFalseWithAttribute.cs" />
+    <Compile Include="Toggles\AlwaysTrueToggle.cs" />
+    <Compile Include="Toggles\AlwaysTrueToggleWithAttribute.cs" />
+    <Compile Include="Toggles\ConfigurationFileToggle.cs" />
+    <Compile Include="Toggles\ConfigurationFileToggleWithAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MiniToggle.Core\MiniToggle.Core.csproj">
+      <Project>{41b76810-40c5-41af-ac56-fac693bd8a0b}</Project>
+      <Name>MiniToggle.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
