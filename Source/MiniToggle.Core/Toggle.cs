@@ -30,7 +30,7 @@ namespace MiniToggle.Core
         public static bool IsEnabled()
         {
             var enabled = Toggle.Toggles.First(toggle => toggle.Type == typeof (TToggle));
-            if (enabled == null)
+            if(enabled.Evaluation == null)
             {
                 throw new ToggleNotConfiguredException(typeof(TToggle).Name);
             }
@@ -44,8 +44,7 @@ namespace MiniToggle.Core
     /// </summary>
     public static class Toggle
     {
-        // TODO:This should probably be a list of ToggleDefinitions
-        internal static readonly IEnumerable<ToggleDefinition> Toggles; 
+        internal static readonly List<ToggleDefinition> Toggles; 
 
         static Toggle()
         {
@@ -66,11 +65,21 @@ namespace MiniToggle.Core
 
             Toggles = toggles.GroupJoin(initializedToggles, toggle => toggle, initializedToggle => initializedToggle.Type,
                 (toggle, initializedToggle) => new { toggle, initializedToggle = initializedToggle.DefaultIfEmpty() })
-                .Select(finalToggle => new ToggleDefinition { Type = finalToggle.toggle, Evaluation = finalToggle.initializedToggle.First()?.Evaluation });
+                .Select(finalToggle => new ToggleDefinition { Type = finalToggle.toggle, Evaluation = finalToggle.initializedToggle.First()?.Evaluation }).ToList();
         }
 
         internal static void Init()
         {
+        }
+
+        /// <summary>
+        /// Internal method to retrieve a toggle for testing
+        /// </summary>
+        /// <param name="toggleType">The type of the toggle sought</param>
+        /// <returns>A <see cref="ToggleDefinition"/></returns>
+        internal static ToggleDefinition GetToggle(Type toggleType)
+        {
+            return Toggles.First(toggle => toggle.Type == toggleType);
         }
 
         /// <summary>

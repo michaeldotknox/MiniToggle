@@ -52,15 +52,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AttributeTests.cs" />
     <Compile Include="InitializationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetupFixture.cs" />
+    <Compile Include="ToggleConfigurationTests.cs" />
+    <Compile Include="ToggleStatusTests.cs" />
     <Compile Include="Toggles\AlwaysFalseToggle.cs" />
     <Compile Include="Toggles\AlwaysFalseWithAttribute.cs" />
     <Compile Include="Toggles\AlwaysTrueToggle.cs" />
     <Compile Include="Toggles\AlwaysTrueToggleWithAttribute.cs" />
     <Compile Include="Toggles\ConfigurationFileToggle.cs" />
     <Compile Include="Toggles\ConfigurationFileToggleWithAttribute.cs" />
+    <Compile Include="Toggles\InvalidToggle.cs" />
+    <Compile Include="Toggles\UninitializedToggle.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
