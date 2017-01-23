@@ -48,11 +48,13 @@ namespace MiniToggle.Core
 
         static Toggle()
         {
+            // A list of all classes that implement the IToggle interface
             var toggles =
                 AppDomain.CurrentDomain.GetAssemblies()
                     .SelectMany(
                         assembly => assembly.GetTypes().Where(type => type.GetInterfaces().Contains(typeof (IToggle)))).ToList();
 
+            // A list of predefined toggles for which we need to create the toggle definition
             var initializedToggles = (
                 toggles.Where(toggle => toggle.GetCustomAttribute<AlwaysTrueAttribute>() != null)
                     .Select(type => new ToggleDefinition { Type = type, Evaluation = SetTrue() }).AsQueryable()
@@ -62,6 +64,15 @@ namespace MiniToggle.Core
                     .Union(
                         (toggles.Where(toggle => toggle.GetCustomAttribute<SettingConfigurationAttribute>() != null)).Select(
                             type => new ToggleDefinition { Type = type, Evaluation = SetSettingFile(type) }))).ToList();
+
+            // TODO: Get a list of all attributes that inherit from the abstract ToggleAttribute.  Put that into a Dictionary<Type, ToggleAttribute>
+            var a = toggles.Where(toggle => toggle.GetCustomAttributes<ToggleAttribute>(true) != null);
+
+            // TODO: Get a list of all of the classes that have a ToggleAttribute and return a list of types
+
+            // TODO: Get the MethodInfo for the GetDefinition method
+
+            // TODO: For each type with an attribute, call the GetDefinition method for the type using the instance of the attribute in the dictionary
 
             Toggles = toggles.GroupJoin(initializedToggles, toggle => toggle, initializedToggle => initializedToggle.Type,
                 (toggle, initializedToggle) => new { toggle, initializedToggle = initializedToggle.DefaultIfEmpty() })
@@ -125,8 +136,9 @@ namespace MiniToggle.Core
         /// </summary>
         /// <param name="settingFileConfiguration">The <see cref="SettingFileConfiguration"/> for the toggle</param>
         /// <param name="settingName">The name of the setting to use</param>
-        public static void Named(this SettingFileConfiguration settingFileConfiguration, string settingName)
+        public static SettingFileConfiguration Named(this SettingFileConfiguration settingFileConfiguration, string settingName)
         {
+            settingFileConfiguration.SettingName = settingName;
             SetEvalation(settingFileConfiguration.Toggle, () =>
             {
                 var setting = ConfigurationManager.AppSettings[settingName];
@@ -136,6 +148,27 @@ namespace MiniToggle.Core
                 }
 
                 return ConfigurationManager.AppSettings[settingName] == "true";
+            });
+
+            return settingFileConfiguration;
+        }
+
+        /// <summary>
+        /// Sets the default value for the toggle if the the setting is not present in the config file
+        /// </summary>
+        /// <param name="settingFileConfiguration">The <see cref="SettingFileConfiguration"/> for the toggle</param>
+        /// <param name="defaultValue">The default value to use if the setting is not present in the config file</param>
+        public static void Default(this SettingFileConfiguration settingFileConfiguration, bool defaultValue)
+        {
+            SetEvalation(settingFileConfiguration.Toggle, () =>
+            {
+                var setting = ConfigurationManager.AppSettings[settingFileConfiguration.SettingName];
+                if (setting == null)
+                {
+                    return defaultValue;
+                }
+
+                return ConfigurationManager.AppSettings[settingFileConfiguration.SettingName] == "true";
             });
         }
 

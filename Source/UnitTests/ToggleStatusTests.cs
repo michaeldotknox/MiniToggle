@@ -46,7 +46,7 @@ namespace MiniToggle.UnitTests
         }
 
         [Test]
-        public void AlwaysFalseToggleConfiguredWIthAttributeReturnsFalse()
+        public void AlwaysFalseToggleConfiguredWithAttributeReturnsFalse()
         {
             // Arrange
 
@@ -67,6 +67,20 @@ namespace MiniToggle.UnitTests
 
             // Assert
             result.Should().BeFalse();
+        }
+
+        [Test]
+        public void ConfigurationFileToggleReturnsFalseIfSettingIsNotPresent()
+        {
+            // Arrange
+            Toggle<UninitializedToggle>.Is().Configured().WithSetting().Named("NotPresentSetting").Default(false);
+
+            // Act
+            var result = Toggle<UninitializedToggle>.IsEnabled();
+
+            // Assert
+            result.Should().BeFalse();
+
         }
     }
 }

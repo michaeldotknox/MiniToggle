@@ -8,5 +8,6 @@ namespace MiniToggle.Core
     public class SettingFileConfiguration
     {
         internal Type Toggle { get; set; }
+        internal string SettingName { get; set; }
     }
 }

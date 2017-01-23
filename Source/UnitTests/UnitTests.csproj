@@ -64,6 +64,7 @@
     <Compile Include="Toggles\AlwaysTrueToggleWithAttribute.cs" />
     <Compile Include="Toggles\ConfigurationFileToggle.cs" />
     <Compile Include="Toggles\ConfigurationFileToggleWithAttribute.cs" />
+    <Compile Include="Toggles\ConfigurationToggleWithMissingSetting.cs" />
     <Compile Include="Toggles\InvalidToggle.cs" />
     <Compile Include="Toggles\UninitializedToggle.cs" />
   </ItemGroup>
