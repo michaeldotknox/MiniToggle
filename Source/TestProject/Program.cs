@@ -1,6 +1,6 @@
 ﻿using System;
 using MiniToggle.Core;
-using TestProject.Toggles;
+using MiniToggle.TestProject.Toggles;
 
 namespace MiniToggle.TestProject
 {

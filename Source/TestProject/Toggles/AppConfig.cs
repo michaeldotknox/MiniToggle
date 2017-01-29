@@ -1,6 +1,6 @@
 ﻿using MiniToggle.Core;
 
-namespace TestProject.Toggles
+namespace MiniToggle.TestProject.Toggles
 {
     public class AppConfig : IToggle
     {

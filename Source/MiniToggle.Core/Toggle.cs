@@ -55,28 +55,36 @@ namespace MiniToggle.Core
                         assembly => assembly.GetTypes().Where(type => type.GetInterfaces().Contains(typeof (IToggle)))).ToList();
 
             // A list of predefined toggles for which we need to create the toggle definition
-            var initializedToggles = (
-                toggles.Where(toggle => toggle.GetCustomAttribute<AlwaysTrueAttribute>() != null)
-                    .Select(type => new ToggleDefinition { Type = type, Evaluation = SetTrue() }).AsQueryable()
-                    .Union(
-                        (toggles.Where(toggle => toggle.GetCustomAttribute<AlwaysFalseAttribute>() != null)).Select(
-                            type => new ToggleDefinition { Type = type, Evaluation = SetFalse() })).AsQueryable()
-                    .Union(
-                        (toggles.Where(toggle => toggle.GetCustomAttribute<SettingConfigurationAttribute>() != null)).Select(
-                            type => new ToggleDefinition { Type = type, Evaluation = SetSettingFile(type) }))).ToList();
+            var initializedToggles = GetToggles(toggles);
+            //var initializedToggles = (
+            //    toggles.Where(toggle => toggle.GetCustomAttribute<AlwaysTrueAttribute>() != null)
+            //        .Select(type => new ToggleDefinition { Type = type, Evaluation = SetTrue() }).AsQueryable()
+            //        .Union(
+            //            (toggles.Where(toggle => toggle.GetCustomAttribute<AlwaysFalseAttribute>() != null)).Select(
+            //                type => new ToggleDefinition { Type = type, Evaluation = SetFalse() })).AsQueryable()
+            //        .Union(
+            //            (toggles.Where(toggle => toggle.GetCustomAttribute<SettingConfigurationAttribute>() != null)).Select(
+            //                type => new ToggleDefinition { Type = type, Evaluation = SetSettingFile(type) }))).ToList();
 
+            Toggles = toggles.GroupJoin(initializedToggles, toggle => toggle, initializedToggle => initializedToggle.Type,
+                (toggle, initializedToggle) => new { toggle, initializedToggle = initializedToggle.DefaultIfEmpty() })
+                .Select(finalToggle => new ToggleDefinition { Type = finalToggle.toggle, Evaluation = finalToggle.initializedToggle.First()?.Evaluation }).ToList();
+        }
+
+        private static IEnumerable<ToggleDefinition> GetToggles(IEnumerable<Type> toggles)
+        {
+            var a = toggles.Where(toggle => toggle.GetCustomAttribute<ToggleAttribute>() != null);
+            var b = a.Select(toggle => toggle.GetCustomAttribute<ToggleAttribute>().GetDefinition(toggle));
             // TODO: Get a list of all attributes that inherit from the abstract ToggleAttribute.  Put that into a Dictionary<Type, ToggleAttribute>
-            var a = toggles.Where(toggle => toggle.GetCustomAttributes<ToggleAttribute>(true) != null);
+            return b;
+            return toggles.Where(toggle => toggle.GetCustomAttributes<ToggleAttribute>() != null)
+                    .Select(toggle => toggle.GetCustomAttribute<ToggleAttribute>().GetDefinition(toggle));
 
             // TODO: Get a list of all of the classes that have a ToggleAttribute and return a list of types
 
             // TODO: Get the MethodInfo for the GetDefinition method
 
             // TODO: For each type with an attribute, call the GetDefinition method for the type using the instance of the attribute in the dictionary
-
-            Toggles = toggles.GroupJoin(initializedToggles, toggle => toggle, initializedToggle => initializedToggle.Type,
-                (toggle, initializedToggle) => new { toggle, initializedToggle = initializedToggle.DefaultIfEmpty() })
-                .Select(finalToggle => new ToggleDefinition { Type = finalToggle.toggle, Evaluation = finalToggle.initializedToggle.First()?.Evaluation }).ToList();
         }
 
         internal static void Init()
