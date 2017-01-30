@@ -29,13 +29,13 @@ namespace MiniToggle.Core
         /// <returns>A boolean indicating if the toggle is enabled</returns>
         public static bool IsEnabled()
         {
-            var enabled = Toggle.Toggles[typeof (TToggle)];
-            if (enabled == null)
+            var enabled = Toggle.Toggles.First(toggle => toggle.Type == typeof (TToggle));
+            if(enabled.Evaluation == null)
             {
                 throw new ToggleNotConfiguredException(typeof(TToggle).Name);
             }
 
-            return enabled.Invoke();
+            return enabled.Evaluation.Invoke();
         }
     }
 
@@ -44,28 +44,61 @@ namespace MiniToggle.Core
     /// </summary>
     public static class Toggle
     {
-        internal static readonly Dictionary<Type, Func<bool>> Toggles; 
+        internal static readonly List<ToggleDefinition> Toggles; 
 
         static Toggle()
         {
+            // A list of all classes that implement the IToggle interface
             var toggles =
                 AppDomain.CurrentDomain.GetAssemblies()
                     .SelectMany(
                         assembly => assembly.GetTypes().Where(type => type.GetInterfaces().Contains(typeof (IToggle)))).ToList();
 
-            Toggles =
-                toggles.Where(toggle => toggle.GetCustomAttribute<AlwaysTrueAttribute>() != null)
-                    .Select(type => new ToggleDefinition {Type = type, Evaluation = SetTrue()}).AsQueryable()
-                    .Union(
-                        (toggles.Where(toggle => toggle.GetCustomAttribute<AlwaysFalseAttribute>() != null)).Select(
-                            type => new ToggleDefinition {Type = type, Evaluation = SetFalse()})).AsQueryable()
-                    .Union(
-                        (toggles.Where(toggle => toggle.GetCustomAttribute<SettingConfigurationAttribute>() != null)).Select(
-                            type => new ToggleDefinition {Type = type, Evaluation = SetSettingFile(type)}))
-                    .ToDictionary(x => x.Type, y => y.Evaluation);
+            // A list of predefined toggles for which we need to create the toggle definition
+            var initializedToggles = GetToggles(toggles);
+            //var initializedToggles = (
+            //    toggles.Where(toggle => toggle.GetCustomAttribute<AlwaysTrueAttribute>() != null)
+            //        .Select(type => new ToggleDefinition { Type = type, Evaluation = SetTrue() }).AsQueryable()
+            //        .Union(
+            //            (toggles.Where(toggle => toggle.GetCustomAttribute<AlwaysFalseAttribute>() != null)).Select(
+            //                type => new ToggleDefinition { Type = type, Evaluation = SetFalse() })).AsQueryable()
+            //        .Union(
+            //            (toggles.Where(toggle => toggle.GetCustomAttribute<SettingConfigurationAttribute>() != null)).Select(
+            //                type => new ToggleDefinition { Type = type, Evaluation = SetSettingFile(type) }))).ToList();
 
+            Toggles = toggles.GroupJoin(initializedToggles, toggle => toggle, initializedToggle => initializedToggle.Type,
+                (toggle, initializedToggle) => new { toggle, initializedToggle = initializedToggle.DefaultIfEmpty() })
+                .Select(finalToggle => new ToggleDefinition { Type = finalToggle.toggle, Evaluation = finalToggle.initializedToggle.First()?.Evaluation }).ToList();
+        }
 
-            //.ToDictionary(x => x, y => SetTrue());
+        private static IEnumerable<ToggleDefinition> GetToggles(IEnumerable<Type> toggles)
+        {
+            var a = toggles.Where(toggle => toggle.GetCustomAttribute<ToggleAttribute>() != null);
+            var b = a.Select(toggle => toggle.GetCustomAttribute<ToggleAttribute>().GetDefinition(toggle));
+            // TODO: Get a list of all attributes that inherit from the abstract ToggleAttribute.  Put that into a Dictionary<Type, ToggleAttribute>
+            return b;
+            return toggles.Where(toggle => toggle.GetCustomAttributes<ToggleAttribute>() != null)
+                    .Select(toggle => toggle.GetCustomAttribute<ToggleAttribute>().GetDefinition(toggle));
+
+            // TODO: Get a list of all of the classes that have a ToggleAttribute and return a list of types
+
+            // TODO: Get the MethodInfo for the GetDefinition method
+
+            // TODO: For each type with an attribute, call the GetDefinition method for the type using the instance of the attribute in the dictionary
+        }
+
+        internal static void Init()
+        {
+        }
+
+        /// <summary>
+        /// Internal method to retrieve a toggle for testing
+        /// </summary>
+        /// <param name="toggleType">The type of the toggle sought</param>
+        /// <returns>A <see cref="ToggleDefinition"/></returns>
+        internal static ToggleDefinition GetToggle(Type toggleType)
+        {
+            return Toggles.First(toggle => toggle.Type == toggleType);
         }
 
         /// <summary>
@@ -74,7 +107,7 @@ namespace MiniToggle.Core
         /// <param name="toggleConfiguration">The <see cref="ToggleConfiguration"/> for the toggle</param>
         public static void AlwaysTrue(this ToggleConfiguration toggleConfiguration)
         {
-            Toggles[toggleConfiguration.Toggle] = () => true;
+            SetEvalation(toggleConfiguration.Toggle, SetTrue());
         }
 
         /// <summary>
@@ -83,7 +116,7 @@ namespace MiniToggle.Core
         /// <param name="toggleConfiguration">The <see cref="ToggleConfiguration"/> for the toggle</param>
         public static void AlwaysFalse(this ToggleConfiguration toggleConfiguration)
         {
-            Toggles[toggleConfiguration.Toggle] = () => false;
+            SetEvalation(toggleConfiguration.Toggle, SetFalse());
         }
 
         /// <summary>
@@ -111,9 +144,10 @@ namespace MiniToggle.Core
         /// </summary>
         /// <param name="settingFileConfiguration">The <see cref="SettingFileConfiguration"/> for the toggle</param>
         /// <param name="settingName">The name of the setting to use</param>
-        public static void Named(this SettingFileConfiguration settingFileConfiguration, string settingName)
+        public static SettingFileConfiguration Named(this SettingFileConfiguration settingFileConfiguration, string settingName)
         {
-            Toggles[settingFileConfiguration.Toggle] = () =>
+            settingFileConfiguration.SettingName = settingName;
+            SetEvalation(settingFileConfiguration.Toggle, () =>
             {
                 var setting = ConfigurationManager.AppSettings[settingName];
                 if (setting == null)
@@ -122,7 +156,60 @@ namespace MiniToggle.Core
                 }
 
                 return ConfigurationManager.AppSettings[settingName] == "true";
-            };
+            });
+
+            return settingFileConfiguration;
+        }
+
+        /// <summary>
+        /// Sets the default value for the toggle if the the setting is not present in the config file
+        /// </summary>
+        /// <param name="settingFileConfiguration">The <see cref="SettingFileConfiguration"/> for the toggle</param>
+        /// <param name="defaultValue">The default value to use if the setting is not present in the config file</param>
+        public static void Default(this SettingFileConfiguration settingFileConfiguration, bool defaultValue)
+        {
+            SetEvalation(settingFileConfiguration.Toggle, () =>
+            {
+                var setting = ConfigurationManager.AppSettings[settingFileConfiguration.SettingName];
+                if (setting == null)
+                {
+                    return defaultValue;
+                }
+
+                return ConfigurationManager.AppSettings[settingFileConfiguration.SettingName] == "true";
+            });
+        }
+
+        /// <summary>
+        /// Configures the toggle with a delegate
+        /// </summary>
+        /// <param name="configurableToggle">The <see cref="ConfigurableToggle"/> for the toggle</param>
+        public static DelegateConfiguration With(this ConfigurableToggle configurableToggle)
+        {
+            return new DelegateConfiguration { Toggle = configurableToggle.Toggle };
+        }
+
+        /// <summary>
+        /// Specifies the delegate to call to retrieve the toggle value
+        /// </summary>
+        /// <param name="delegateConfiguration">The delegate configuration</param>
+        /// <param name="evaluation">The delegate to call to retrieve the toggle's configuration</param>
+        /// <returns>A <see cref="Delegate"/></returns>
+        public static DelegateConfiguration Delegate(this DelegateConfiguration delegateConfiguration, Func<bool> evaluation)
+        {
+            SetEvalation(delegateConfiguration.Toggle, evaluation);
+            return delegateConfiguration;
+        }
+
+        private static void SetEvalation(Type type, Func<bool> evaluation)
+        {
+            var toggle = Toggles.FirstOrDefault(soughtToggle => soughtToggle.Type == type);
+
+            if (toggle == null)
+            {
+                throw new ToggleNotConfiguredException(type.Name);
+            }
+            toggle.Evaluation = evaluation;
         }
 
         private static Func<bool> SetTrue()

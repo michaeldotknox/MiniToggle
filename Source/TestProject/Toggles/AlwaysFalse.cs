@@ -1,6 +1,6 @@
 ﻿using MiniToggle.Core;
 
-namespace TestProject.Toggles
+namespace MiniToggle.TestProject.Toggles
 {
     class AlwaysFalse : IToggle
     {

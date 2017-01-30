@@ -2,14 +2,14 @@
 <package >
   <metadata>
     <id>MiniToggle.Core</id>
-    <version>0.2.0-beta2</version>
+    <version>0.3.0-beta3</version>
     <title>MiniToggle</title>
     <authors>Michael Knox</authors>
     <owners>Michael Knox</owners>
     <projectUrl>https://github.com/michaeldotknox/minitoggle</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>MiniToggle is a minimal feature toggle library designed to be simple and quick.</description>
-    <releaseNotes>This is the first beta release.</releaseNotes>
+    <releaseNotes>This is the third beta release.  Added a default value for config file configuration using the fluent interface and added a default value on the attribute for config file toggles.s</releaseNotes>
     <copyright>Copyright 2016</copyright>
     <tags>c# .Net Feature Toggle</tags>
   </metadata>

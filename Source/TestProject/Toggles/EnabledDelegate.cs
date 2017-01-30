@@ -2,7 +2,7 @@
 
 namespace MiniToggle.TestProject.Toggles
 {
-    public class AppConfig : IToggle
+    public class EnabledDelegate : IToggle
     {
     }
 }

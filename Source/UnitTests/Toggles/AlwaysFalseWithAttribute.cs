@@ -1,7 +1,7 @@
 ﻿using MiniToggle.Core;
 using MiniToggle.Core.Attributes;
 
-namespace MiniToggle.TestProject.Toggles
+namespace MiniToggle.UnitTests.Toggles
 {
     [AlwaysFalse]
     public class AlwaysFalseWithAttribute : IToggle

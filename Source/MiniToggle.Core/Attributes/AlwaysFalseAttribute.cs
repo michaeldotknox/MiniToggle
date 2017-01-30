@@ -6,7 +6,15 @@ namespace MiniToggle.Core.Attributes
     /// Indicates that the toggle is always false
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class AlwaysFalseAttribute : Attribute
+    public class AlwaysFalseAttribute : ToggleAttribute
     {
+        internal override ToggleDefinition GetDefinition(Type type)
+        {
+            return new ToggleDefinition
+            {
+                Type = type,
+                Evaluation = () => false
+            };
+        }
     }
 }
