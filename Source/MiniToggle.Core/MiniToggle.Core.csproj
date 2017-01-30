@@ -39,6 +39,7 @@
     <Compile Include="Attributes\AlwaysTrueAttribute.cs" />
     <Compile Include="Attributes\SettingConfigurationAttribute.cs" />
     <Compile Include="Attributes\ToggleAttribute.cs" />
+    <Compile Include="DelegateConfiguration.cs" />
     <Compile Include="Exceptions\ToggleNotConfiguredException.cs" />
     <Compile Include="SettingFileConfiguration.cs" />
     <Compile Include="ConfigurableToggle.cs" />

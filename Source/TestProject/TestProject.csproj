@@ -45,6 +45,8 @@
     <Compile Include="Toggles\AlwaysTrueWithAttribute.cs" />
     <Compile Include="Toggles\AppConfig.cs" />
     <Compile Include="Toggles\AppConfigWithAttribute.cs" />
+    <Compile Include="Toggles\DisabledDelegate.cs" />
+    <Compile Include="Toggles\EnabledDelegate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
