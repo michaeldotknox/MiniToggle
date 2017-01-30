@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using MiniToggle.Core.Attributes;
 using MiniToggle.Core.Exceptions;
@@ -195,8 +194,8 @@ namespace MiniToggle.Core
         /// </summary>
         /// <param name="delegateConfiguration">The delegate configuration</param>
         /// <param name="evaluation">The delegate to call to retrieve the toggle's configuration</param>
-        /// <returns>A <see cref="DelegateConfiguration"/></returns>
-        public static DelegateConfiguration DelegateConfiguration(this DelegateConfiguration delegateConfiguration, Func<bool> evaluation)
+        /// <returns>A <see cref="Delegate"/></returns>
+        public static DelegateConfiguration Delegate(this DelegateConfiguration delegateConfiguration, Func<bool> evaluation)
         {
             SetEvalation(delegateConfiguration.Toggle, evaluation);
             return delegateConfiguration;
