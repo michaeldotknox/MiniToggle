@@ -1,4 +1,7 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using FluentAssertions;
 using MiniToggle.Core;
 using NUnit.Framework;
 
@@ -11,11 +14,16 @@ namespace MiniToggle.UnitTests
         public void CTorCreatesAToggleRecordForEachClassThatImplementsIToggle()
         {
             // Arrange
+            var toggles =
+                Assembly
+                    .GetExecutingAssembly()
+                    .GetTypes()
+                    .Count(_ => _.GetInterfaces().Contains(typeof (IToggle)));
 
             // Act
 
             // Assert
-            Toggle.Toggles.Should().HaveCount(6);
+            Toggle.Toggles.Should().HaveCount(toggles);
         }
     }
 }

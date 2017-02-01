@@ -73,14 +73,26 @@ namespace MiniToggle.UnitTests
         public void ConfigurationFileToggleReturnsFalseIfSettingIsNotPresent()
         {
             // Arrange
-            Toggle<UninitializedToggle>.Is().Configured().WithSetting().Named("NotPresentSetting").Default(false);
+            Toggle<ConfigurationToggleWithMissingSetting>.Is().Configured().WithSetting().Named("NotPresentSetting").Default(false);
 
             // Act
-            var result = Toggle<UninitializedToggle>.IsEnabled();
+            var result = Toggle<ConfigurationToggleWithMissingSetting>.IsEnabled();
 
             // Assert
             result.Should().BeFalse();
+        }
 
+        [Test]
+        public void ToggleConfiguredWithDelegateReturnsResultOfDelegate()
+        {
+            // Arrange
+            Toggle<DelegateToggle>.Is().Configured().With().Delegate(() => true);
+
+            // Act
+            var result = Toggle<DelegateToggle>.IsEnabled();
+
+            // Assert
+            result.Should().BeTrue();
         }
     }
 }
