@@ -2,7 +2,7 @@
 
 namespace MiniToggle.UnitTests.Toggles
 {
-    public class ConfigurationToggleWithMissingSetting : IToggle
+    public class DelegateToggle : IToggle
     {
     }
 }
