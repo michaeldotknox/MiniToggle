@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
 using MiniToggle.Core.Attributes;
 using MiniToggle.Core.Exceptions;
 
@@ -36,6 +38,79 @@ namespace MiniToggle.Core
             }
 
             return enabled.Evaluation.Invoke();
+        }
+
+        /// <summary>
+        /// Executes the appropriate code based on the status of the toggle.  This can be an anonymous delegate or a predefined delegate.  
+        /// Each of the delegates must return the same type.
+        /// </summary>
+        /// <param name="executeIfEnabled">The code to execute if the toggle is enabled</param>
+        /// <param name="executeIfDisabled">The code to execute if the toggle is disabled</param>
+        /// <typeparam name="TResult">The type returned by the methods</typeparam>
+        /// <returns>The result returned by the methods</returns>
+        public static TResult Execute<TResult>(Func<TResult> executeIfEnabled, Func<TResult> executeIfDisabled)
+        {
+            var enabled = IsEnabled();
+
+            return enabled ? executeIfEnabled() : executeIfDisabled();
+        }
+
+        /// <summary>
+        /// Executes the appropriate code based on the status of the toggle.  This can be an anonymous delegate or a predefined delegate.  
+        /// </summary>
+        /// <param name="executeIfEnabled">The code to execute if the toggle is enabled</param>
+        /// <param name="executeIfDisabled">The code to execute if the toggle is disabled</param>
+        public static void Execute(Action executeIfEnabled, Action executeIfDisabled)
+        {
+            var enabled = IsEnabled();
+
+            if (enabled)
+            {
+                executeIfEnabled();
+            }
+            else
+            {
+                executeIfDisabled();
+            }
+        }
+
+        /// <summary>
+        /// Executes the appropriate code asynchronously based on the status of the toggle.  This can be an anonymous delegate or a predefined delegate.  
+        /// Each of the delegates must return the same type.
+        /// </summary>
+        /// <param name="executeIfEnabled">The code to execute if the toggle is enabled</param>
+        /// <param name="executeIfDisabled">The code to execute if the toggle is disabled</param>
+        /// <typeparam name="TResult">The type returned by the methods</typeparam>
+        /// <returns>The result returned by the methods</returns>
+        public async static Task<TResult> ExecuteAsync<TResult>(Func<Task<TResult>> executeIfEnabled,
+            Func<Task<TResult>> executeIfDisabled)
+        {
+            var enabled = IsEnabled();
+
+            if (enabled)
+            {
+                return await executeIfEnabled();
+            }
+            return await executeIfDisabled();
+        }
+
+        /// <summary>
+        /// Executes the appropriate code based on the status of the toggle.  This can be an anonymous delegate or a predefined delegate.  
+        /// </summary>
+        /// <param name="executeIfEnabled">The code to execute if the toggle is enabled</param>
+        /// <param name="executeIfDisabled">The code to execute if the toggle is disabled</param>
+        public async static Task ExecuteAsync(Func<Task> executeIfEnabled, Func<Task> executeIfDisabled)
+        {
+            var enabled = IsEnabled();
+
+            if (enabled)
+            {
+                await executeIfEnabled();
+            }
+            else
+            {
+                await executeIfDisabled();
+            }
         }
     }
 
@@ -137,6 +212,26 @@ namespace MiniToggle.Core
         public static SettingFileConfiguration WithSetting(this ConfigurableToggle configurableToggle)
         {
             return new SettingFileConfiguration {Toggle = configurableToggle.Toggle};
+        }
+
+        /// <summary>
+        /// Creates a cached toggle allowing the user to determine how the toggle is cached
+        /// </summary>
+        /// <param name="configurableToggle">A <see cref="ConfigurableToggle"/></param>
+        /// <returns>A <see cref="CachedToggle"/></returns>
+        public static CachedToggle Cached(this ConfigurableToggle configurableToggle)
+        {
+            return new CachedToggle {Toggle = configurableToggle.Toggle};
+        }
+
+        /// <summary>
+        /// Initializes the cached toggle at initialization
+        /// </summary>
+        /// <param name="cachedToggle">A <see cref="CachedToggle"/></param>
+        public static void AtInitialization(this CachedToggle cachedToggle)
+        {
+            var result = Toggles.Single(_ => _.Type == cachedToggle.Toggle).Evaluation();
+            SetEvalation(cachedToggle.Toggle, Expression.Lambda<Func<bool>>(Expression.Constant(result)).Compile());
         }
 
         /// <summary>
