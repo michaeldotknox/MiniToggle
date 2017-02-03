@@ -47,6 +47,14 @@ namespace MiniToggle.TestProject
                 ? "Delegate toggle with delegate that returns true.  This should not be called."
                 : "Delegate toggle with delegate that returns false.  This should be called");
 
+            Toggle<EnabledDelegate>.Execute(
+                () => Console.WriteLine("Execute if enabled delegate.  This should be called."),
+                () => Console.WriteLine("Execute if disabled delegate.  This should not be called"));
+
+            Toggle<DisabledDelegate>.Execute(
+                () => Console.WriteLine("Execute if enabled delegate.  This should not be called."),
+                () => Console.WriteLine("Execute if disabled delegate.  This should be called."));
+
             Console.ReadKey();
         }
     }
