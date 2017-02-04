@@ -17,10 +17,19 @@ namespace MiniToggle.Core.Attributes
         /// </summary>
         /// <param name="settingName">The name of the setting used to configure the toggle</param>
         /// <param name="defaultValue">The default value to use if the setting is not found in the configuration file</param>
-        public SettingConfigurationAttribute(string settingName, bool defaultValue = true)
+        public SettingConfigurationAttribute(string settingName, bool defaultValue)
         {
             SettingName = settingName;
             DefaultValue = defaultValue;
+        }
+
+        /// <summary>
+        /// Creates an attribute that indicates that the toggle is configured with the setting
+        /// </summary>
+        /// <param name="settingName">The name of the setting used to configure the toggle</param>
+        public SettingConfigurationAttribute(string settingName) : this(settingName, true)
+        {
+            
         }
 
         internal override ToggleDefinition GetDefinition(Type type)
