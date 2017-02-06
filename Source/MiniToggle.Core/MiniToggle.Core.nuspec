@@ -2,14 +2,14 @@
 <package >
   <metadata>
     <id>MiniToggle.Core</id>
-    <version>1.0.0-rc1</version>
+    <version>1.0.1-rc2</version>
     <title>MiniToggle</title>
     <authors>Michael Knox</authors>
     <owners>Michael Knox</owners>
     <projectUrl>https://github.com/michaeldotknox/minitoggle</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>MiniToggle is a minimal feature toggle library designed to be simple and quick.</description>
-    <releaseNotes>This is the final version before the official release.  Now allows caching and allows specifying code to run based on the status of the toggle.</releaseNotes>
+    <releaseNotes>This is the final version before the official release.  Fixed some issues with the default values of the configuration settings toggle.  Minor caching change.</releaseNotes>
     <copyright>Copyright 2016</copyright>
     <tags>c# .Net Feature Toggle</tags>
   </metadata>
