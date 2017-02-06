@@ -14,6 +14,7 @@ namespace MiniToggle.TestProject
             Toggle<AppConfig>.Is().Configured().WithSetting().Named("testToggle");
             Toggle<EnabledDelegate>.Is().Configured().With().Delegate(() => true);
             Toggle<DisabledDelegate>.Is().Configured().With().Delegate(() => false);
+            Toggle<EnabledDelegate>.Is().Cached().AtInitialization();
 
             Console.WriteLine(Toggle<AlwaysTrue>.IsEnabled()
                 ? "Always true toggle is true.  This should be called."

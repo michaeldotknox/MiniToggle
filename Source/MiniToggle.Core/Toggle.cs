@@ -82,7 +82,7 @@ namespace MiniToggle.Core
         /// <param name="executeIfDisabled">The code to execute if the toggle is disabled</param>
         /// <typeparam name="TResult">The type returned by the methods</typeparam>
         /// <returns>The result returned by the methods</returns>
-        public async static Task<TResult> ExecuteAsync<TResult>(Func<Task<TResult>> executeIfEnabled,
+        public static async Task<TResult> ExecuteAsync<TResult>(Func<Task<TResult>> executeIfEnabled,
             Func<Task<TResult>> executeIfDisabled)
         {
             var enabled = IsEnabled();
@@ -219,7 +219,7 @@ namespace MiniToggle.Core
         /// </summary>
         /// <param name="configurableToggle">A <see cref="ConfigurableToggle"/></param>
         /// <returns>A <see cref="CachedToggle"/></returns>
-        public static CachedToggle Cached(this ConfigurableToggle configurableToggle)
+        public static CachedToggle Cached(this ToggleConfiguration configurableToggle)
         {
             return new CachedToggle {Toggle = configurableToggle.Toggle};
         }
