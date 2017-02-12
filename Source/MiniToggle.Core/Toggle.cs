@@ -204,6 +204,8 @@ namespace MiniToggle.Core
         /// <returns>A <see cref="CachedToggle"/></returns>
         public static CachedToggle Cached(this ToggleConfiguration configurableToggle)
         {
+            if (configurableToggle.Toggle == null) throw new ToggleCannotBeNullException();
+
             return new CachedToggle {Toggle = configurableToggle.Toggle};
         }
 
@@ -299,21 +301,5 @@ namespace MiniToggle.Core
         {
             return () => false;
         }
-
-        private static Func<bool> SetSettingFile(Type type)
-        {
-            var attribute = type.GetCustomAttribute<SettingConfigurationAttribute>();
-
-            return () =>
-            {
-                var setting = ConfigurationManager.AppSettings[attribute.SettingName];
-                if (setting == null)
-                {
-                    return true;
-                }
-
-                return ConfigurationManager.AppSettings[attribute.SettingName] == "true";
-            };
-        } 
     }
 }

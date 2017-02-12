@@ -41,6 +41,7 @@
     <Compile Include="Attributes\ToggleAttribute.cs" />
     <Compile Include="CachedToggle.cs" />
     <Compile Include="DelegateConfiguration.cs" />
+    <Compile Include="Exceptions\ToggleCannotBeNullException.cs" />
     <Compile Include="Exceptions\ToggleNotConfiguredException.cs" />
     <Compile Include="SettingFileConfiguration.cs" />
     <Compile Include="ConfigurableToggle.cs" />

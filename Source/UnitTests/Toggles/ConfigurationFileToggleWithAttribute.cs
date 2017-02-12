@@ -2,7 +2,7 @@
 
 namespace MiniToggle.UnitTests.Toggles
 {
-    [SettingConfiguration("TestToggle")]
+    [SettingConfiguration("onToggle")]
     public class ConfigurationFileToggleWithAttribute
     {
     }
