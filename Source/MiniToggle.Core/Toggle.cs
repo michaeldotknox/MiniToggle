@@ -127,7 +127,7 @@ namespace MiniToggle.Core
             var toggles =
                 AppDomain.CurrentDomain.GetAssemblies()
                     .SelectMany(
-                        assembly => assembly.GetTypes().Where(type => type.GetInterfaces().Contains(typeof (IToggle)))).ToList();
+                        GetTypes).ToList();
 
             // A list of predefined toggles for which we need to create the toggle definition
             var initializedToggles = GetToggles(toggles);
@@ -135,6 +135,19 @@ namespace MiniToggle.Core
             Toggles = toggles.GroupJoin(initializedToggles, toggle => toggle, initializedToggle => initializedToggle.Type,
                 (toggle, initializedToggle) => new { toggle, initializedToggle = initializedToggle.DefaultIfEmpty() })
                 .Select(finalToggle => new ToggleDefinition { Type = finalToggle.toggle, Evaluation = finalToggle.initializedToggle.First()?.Evaluation }).ToList();
+        }
+
+        private static IEnumerable<Type> GetTypes(Assembly assembly)
+        {
+            try
+            {
+                return assembly.GetTypes().Where(type => type.GetInterfaces().Contains(typeof(IToggle)));
+            }
+            catch
+            {
+                return new List<Type>();
+                throw;
+            }
         }
 
         private static IEnumerable<ToggleDefinition> GetToggles(IEnumerable<Type> toggles)
